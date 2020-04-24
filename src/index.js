@@ -7,7 +7,7 @@ connectDB();
 
 app.use("/api/auth", Auth);
 
-const PORT = process.env.PORT | 5000;
+const PORT = process.env.PORT | 5100;
 
 app.listen(PORT, () => {
   console.log(`Server is started at ${PORT}`);
