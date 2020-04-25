@@ -24,6 +24,12 @@ router.post("/register", authValidator, authBodyValidator, async (req, res) => {
   try {
     let { email, password } = req.body;
 
+    const user = await User.findOne({ email });
+
+    if (user) {
+      return res.status(400).json({ errors: [{ msg: "Email already taken" }] });
+    }
+
     const salt = await bcrypt.genSalt(10);
     password = await bcrypt.hash(password, salt);
 
