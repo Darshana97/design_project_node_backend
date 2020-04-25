@@ -4,6 +4,7 @@ import { check, validationResult } from "express-validator";
 import authBodyValidator from "../../middlewares/auth/authBodyValidator";
 import bcrypt from "bcryptjs";
 import { model } from "mongoose";
+import jwt from 'jsonwebtoken';
 
 const router = Router();
 
@@ -59,7 +60,21 @@ router.post("/login", authValidator, authBodyValidator, async (req, res) => {
       return res.status(400).json({ errors: [{ msg: "Invalid Password" }] });
     }
 
-    
+    const payload = {
+      email: user.email,
+      _id: user.id,
+    };
+
+    jwt.sign(payload, "jwtsecret", { expiresIn: 3600 * 24 }, (err, token) => {
+      if (err) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: "something went wrong" }] });
+      }
+      return res.status(200).json(token);
+    });
+
+
   } catch (error) {
     console.log(error.message);
     return res.status(400).json({ errors: [{ msg: "internal server error" }] });
